@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cart</title>
+</head>
+<body>
+
+<h1>Your Cart</h1>
+<div id="cart"></div>
+<button onclick="placeOrder()">Place Order</button>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let total = 0;
+
+const div = document.getElementById("cart");
+cart.forEach(p => {
+  total += p.price;
+  div.innerHTML += `<p>${p.name} - ₹${p.price}</p>`;
+});
+
+div.innerHTML += `<h3>Total: ₹${total}</h3>`;
+
+function placeOrder() {
+  fetch("http://localhost:5000/api/orders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: "demoUser",
+      products: cart,
+      total: total
+    })
+  });
+  alert("Order placed successfully");
+  localStorage.removeItem("cart");
+}
+</script>
+
+</body>
+</html>
